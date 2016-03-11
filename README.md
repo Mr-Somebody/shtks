@@ -1,8 +1,8 @@
-# shtks
-Provide frequently used command
-# Command include
-max - Maximum of a sequence of nums
-min - Minimum of a sequence of nums
-topk - Top k of a sequence of nums
-sums - Sum of a sequence of nums
-avg - Average of a sequence of nums
+# shtks\n
+Provide frequently used command\n
+# Command include\n
+max - Maximum of a sequence of nums\n
+min - Minimum of a sequence of nums\n
+topk - Top k of a sequence of nums\n
+sums - Sum of a sequence of nums\n
+avg - Average of a sequence of nums\n
