@@ -1,0 +1,61 @@
+#!/bin/bash
+
+usage="max -f <file path> [-c <column number: default 0>] [-s <separator: default tab \"\\\\t\">]"
+
+function show_usage(){
+    local msg=""
+    if [ $# -gt 0 ];then
+	msg=$1
+    fi
+    if [ "M${msg}" != "M" ];then
+	echo "${msg}"
+    fi
+    echo -e "${usage}"
+}
+
+file=""
+col=0
+sep="\t"
+
+while getopts :f:c:s:h cmd
+do
+    case ${cmd} in
+	f) file=${OPTARG};;
+	c) col=${OPTARG};;
+	s) sep=${OPTARG};;
+	h) show_usage;exit 0;;
+	\?) show_usage "Unknown arg -${OPTARG}";exit 0;;
+    esac
+done
+
+if [ "M${file}" == "M" ];then
+    show_usage "Missing input file"
+    exit 1
+fi
+
+if [ ! -f "${file}" ];then
+    show_usage "Input file does not exists"
+    exit 1
+fi
+
+v=`echo ${col} | sed -n "/^[0-9]\+$/p"`
+if [ "M${v}" != "M"${col} ];then
+    show_usage "Column number must be a integer"
+    exit 1
+fi
+
+if [ "M${sep}" == "M" ];then
+    show_usage "Separator can not be empty"
+    exit 1
+fi
+
+awk -v sep=${sep} -v col=${col} '
+BEGIN{FS=sep;a=0}
+{
+  if($col~/^[-]?([0-9])+$/){
+    a+=$col;
+  } else{
+    next;
+  }
+}
+END{print a}' ${file}
