@@ -23,4 +23,5 @@ avg - Average of a sequence of nums
     max -f <file path> [-c <column number: default 0>] [-s <separator: default tab \"\\\\t\">]
 
 avail_disk - Available disk size of a path
+
     avail_disk [-p <path: default current path (file/directory)>]
