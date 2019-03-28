@@ -1,0 +1,41 @@
+#!/bin/sh
+
+usage="avail_disk [-p <path: default current path (file/directory)>]"
+
+show_usage() {
+    local msg=""
+    if [ $# -gt 0 ];then
+	msg=$1
+    fi
+    if [ "M${msg}" != "M" ];then
+	echo "${msg}"
+    fi
+    echo -e "${usage}"
+}
+path=""
+while getopts :p:h cmd
+do
+    case ${cmd} in
+	p) path=${OPTARG};;
+	h) show_usage;exit 0;;
+	\?) show_usage "Unknown arg -${OPTARG}";exit 0;;
+    esac
+done
+
+if test "M${path}" = "M";then
+    path="./"
+fi
+
+if [ ! -f "${path}" ] && [ ! -d "${path}" ];then
+    echo "Path does not exist: ${path}"
+    exit 1
+fi
+cd $path > /dev/null 2>&1
+if test $? != 0;then
+    echo "No rights for input path: ${path}"
+    exit 1
+fi
+path=`pwd`
+cd - > /dev/null 2>&1
+
+df --block-size=1G --output=target,avail | awk -v path=$path -v mlen=0 -v mdisk="" 'BEGIN{OFS="\t";mlen=0;mdisk="";}{clen=length($1);if(clen > mlen && substr(path,1,clen) == $1){mlen=clen;mdisk=$1"\t"$2}}END{print mdisk}'
